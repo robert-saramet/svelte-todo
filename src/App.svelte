@@ -1,21 +1,35 @@
 <script>
 	let title = 'Svelte To-Do List';
 	let items = [];
-	items[0] = {name: 'Don\'t be shy, add some tasks', checked: false};
+	if (!localStorage.getItem('notes')) {
+		items[0] = {name: "Don't be shy, add some tasks", checked: false};
+		updateStorage();
+	} else {
+		let str = localStorage.getItem('notes');
+		items = JSON.parse(str);
+	}
+	
+	function updateStorage() {
+		let str = JSON.stringify(items);
+		localStorage.setItem('notes', str);
+	}
 	
 	let text = '';
 	function newItem() {
 		let item = {name: text, checked: false}
-		items = [...items, item]
+		items = [...items, item];
+		updateStorage();
 		text = '';
 	}
 	function deleteItem(id) {
 		items.splice(id, 1);
 		items = items;
+		updateStorage()
 	}
 	
 	function checkItem(id) {
 		items[id].checked = true;
+		updateStorage();
 	}
 	
 	$: count = items.length
